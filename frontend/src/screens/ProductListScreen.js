@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { createProduct, deleteProduct, listProducts } from '../actions/productActions'
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
+import { PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET } from '../constants/productConstants'
 
 
 const ProductListScreen = ({ history, match }) => {
@@ -42,6 +42,7 @@ const ProductListScreen = ({ history, match }) => {
       history.push(`/admin/product/${createdProduct._id}/edit`)
     } else {
       dispatch(listProducts())
+      dispatch({type:PRODUCT_DELETE_RESET})
     }
   }, [dispatch, history, userInfo,successDelete,successCreate,createdProduct])
 

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { savePaymentMethod } from '../actions/cartActions'
+import Popup from '../components/Popup';
 
 const PaymentScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart)
@@ -12,6 +13,11 @@ const PaymentScreen = ({ history }) => {
   if (!shippingAddress) {
     history.push('/shipping')
   }
+  const [isOpen, setIsOpen] = useState(false);
+ 
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  }
 
   const [paymentVia, setPaymentMethod] = useState(paymentMethod)
 
@@ -19,14 +25,24 @@ const PaymentScreen = ({ history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault()
-    dispatch(savePaymentMethod(paymentVia))
-    history.push('/placeorder')
+    if(paymentVia==='PayPal'){
+      dispatch(savePaymentMethod(paymentVia))
+      history.push('/placeorder')
+    }else{
+      togglePopup()
+    }
   }
 
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 step3 />
       <h1>Payment Method</h1>
+      {isOpen && <Popup
+      content={<>
+         <p>SORRY! THIS SERVICE IS NOT AVAILABLE IN YOUR AREA.YOU CAN USE PAYPAL OR CREDIT CARD FOR PAYMENT</p>
+      </>}
+      handleClose={togglePopup}
+    />}
       <Form onSubmit={submitHandler}>
         <Form.Group>
           <Form.Label as='legend'>Select Method</Form.Label>
