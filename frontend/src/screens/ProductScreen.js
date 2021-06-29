@@ -10,6 +10,7 @@ import {
   createProductReview,
 } from '../actions/productActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
+import Meta from '../components/Meta'
 
 
 const ProductScreen = ({ history,match }) => {
@@ -39,11 +40,18 @@ const ProductScreen = ({ history,match }) => {
         dispatch(listProductDetails(match.params.id))
         dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
       }
+      if(errorProductReview){
+         setTimeout(() => {
+           setRating(0)
+           setComment('')
+           dispatch({type:PRODUCT_CREATE_REVIEW_RESET})
+         },5000)
+      }
       if (!product._id || product._id !== match.params.id) {
         dispatch(listProductDetails(match.params.id))
         dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
       }
-    }, [dispatch, match,successProductReview,product])
+    }, [dispatch, match,successProductReview,product,errorProductReview])
     
     const addToCartHandler = () => {
       history.push(`/cart/${match.params.id}?qty=${qty}`)
@@ -70,6 +78,7 @@ const ProductScreen = ({ history,match }) => {
              <Message variant='danger'>{error}</Message>
          ) :(
           <>
+          <Meta title={product.name} />
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />

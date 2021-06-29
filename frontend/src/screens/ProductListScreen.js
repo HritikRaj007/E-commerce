@@ -3,6 +3,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Table, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
+import Paginate from '../components/Paginate'
 import Loader from '../components/Loader'
 import { createProduct, deleteProduct, listProducts } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET } from '../constants/productConstants'
@@ -11,8 +12,12 @@ import { PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET } from '../constants/product
 const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch()
 
+  const pageNumber = match.params.pageNumber || 1
+
+
   const productList = useSelector((state) => state.productList)
-  const { loading, error, products } = productList
+  const { loading, error, products, page, pages } = productList
+
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -41,10 +46,10 @@ const ProductListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/product/${createdProduct._id}/edit`)
     } else {
-      dispatch(listProducts())
+      dispatch(listProducts('', pageNumber))
       dispatch({type:PRODUCT_DELETE_RESET})
     }
-  }, [dispatch, history, userInfo,successDelete,successCreate,createdProduct])
+  }, [dispatch, history, userInfo,successDelete,successCreate,createdProduct,pageNumber])
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure')) {
@@ -77,6 +82,7 @@ const ProductListScreen = ({ history, match }) => {
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
+        <>
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
             <tr>
@@ -114,6 +120,8 @@ const ProductListScreen = ({ history, match }) => {
             ))}
           </tbody>
         </Table>
+        <Paginate pages={pages} page={page} isAdmin={true} />
+        </>
       )}
     </>
   )
