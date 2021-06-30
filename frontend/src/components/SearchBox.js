@@ -7,8 +7,11 @@ const SearchBox = ({ history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault()
+ //   const key=keyword
+    setKeyword('')
     if (keyword.trim()) {
       history.push(`/search/${keyword}`)
+      setKeyword('')
     } else {
       history.push('/')
     }
@@ -20,6 +23,7 @@ const SearchBox = ({ history }) => {
         type='text'
         name='q'
         onChange={(e) => setKeyword(e.target.value)}
+        value={keyword}
         placeholder='Search Products...'
         className='mr-sm-2 ml-sm-5'
       ></Form.Control>

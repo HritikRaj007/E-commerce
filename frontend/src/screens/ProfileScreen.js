@@ -33,8 +33,12 @@ const ProfileScreen = ({ location, history }) => {
     if (!userInfo) {
       history.push('/login')
     } else {
-      if (!user || !user.name || success) {
-        dispatch({ type: USER_UPDATE_PROFILE_RESET })
+      if (!user || !user.name || success || userInfo._id!==user._id) {
+        if(success){
+          setTimeout(() => {
+            dispatch({ type: USER_UPDATE_PROFILE_RESET })
+          },5000);
+        }
         dispatch(getUserDetails('profile'))
         dispatch(listMyOrders())
       } else {
@@ -102,7 +106,10 @@ const ProfileScreen = ({ location, history }) => {
             ></Form.Control>
           </Form.Group>
 
-          <Button type='submit' variant='primary'>
+          <Button 
+          type='submit'
+          disabled={success} 
+          variant='primary'>
             Update
           </Button>
         </Form>
